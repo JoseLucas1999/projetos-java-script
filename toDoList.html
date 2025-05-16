@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>ToDo List</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 400px;
+  margin: 50px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #ccc;
+}
+
+.input-group {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+#taskInput {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li.done {
+  text-decoration: line-through;
+  color: gray;
+}
+
+li button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Minha ToDo List</h1>
+    <div class="input-group">
+      <input type="text" id="taskInput" placeholder="Digite uma tarefa">
+      <button onclick="addTask()">Adicionar</button>
+    </div>
+    <ul id="taskList"></ul>
+  </div>
+  <script>
+    function addTask() {
+  const taskInput = document.getElementById("taskInput");
+  const taskText = taskInput.value.trim();
+
+  if (taskText === "") return;
+
+  const li = document.createElement("li");
+  li.textContent = taskText;
+
+  // Marcar como feito ao clicar
+  li.addEventListener("click", () => {
+    li.classList.toggle("done");
+  });
+
+  // Botão de deletar
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "X";
+  deleteBtn.onclick = () => li.remove();
+
+  li.appendChild(deleteBtn);
+  document.getElementById("taskList").appendChild(li);
+  taskInput.value = "";
+}
+  </script>
+</body>
+</html>

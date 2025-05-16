@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Tema Light/Dark</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .container {
+      padding: 50px;
+      text-align: center;
+    }
+
+    .light {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+
+    .dark {
+      background-color: #121212;
+      color: #f0f0f0;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="light">
+  <div class="container">
+    <h1 id="themeTitle">Este é o tema light</h1>
+    <button onclick="toggleTheme()" id="themeButton">Dark</button>
+  </div>
+
+<script>
+  // Função que alterna o tema da página entre "light" e "dark"
+  function toggleTheme() {
+    // Referência ao elemento <body>, onde a classe do tema será aplicada
+    const body = document.body;
+
+    // Referência ao elemento que mostra o título do tema atual
+    const title = document.getElementById('themeTitle');
+
+    // Referência ao botão que alterna o tema
+    const button = document.getElementById('themeButton');
+
+    // Verifica se o body atualmente tem o tema "light"
+    if (body.classList.contains('light')) {
+      // Remove o tema "light"
+      body.classList.remove('light');
+
+      // Adiciona o tema "dark"
+      body.classList.add('dark');
+
+      // Atualiza o texto do título para indicar que o tema atual é "dark"
+      title.textContent = "Este é o tema dark";
+
+      // Muda o texto do botão para oferecer a opção de voltar para "light"
+      button.textContent = "Light";
+    } else {
+      // Se o tema atual não for "light", então está em "dark"
+
+      // Remove o tema "dark"
+      body.classList.remove('dark');
+
+      // Adiciona o tema "light"
+      body.classList.add('light');
+
+      // Atualiza o texto do título para indicar que o tema atual é "light"
+      title.textContent = "Este é o tema light";
+
+      // Muda o texto do botão para oferecer a opção de trocar para "dark"
+      button.textContent = "Dark";
+    }
+  }
+</script>
+
+</body>
+</html>

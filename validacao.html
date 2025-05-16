@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Validação de Formulário</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef2f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4caf50;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #mensagem {
+      display: block;
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Login</h2>
+    <input type="text" id="usuario" placeholder="Usuário" required>
+    <input type="password" id="senha" placeholder="Senha" required>
+    <button onclick="validarLogin()">Entrar</button>
+    <span id="mensagem"></span>
+  </div>
+
+<script>
+  // Array contendo os usuários e senhas válidos para simular um "banco de dados"
+  const usuariosSalvos = [
+    { usuario: "ana", senha: "123" },
+    { usuario: "joao", senha: "abc" },
+    { usuario: "maria", senha: "senha1" },
+    { usuario: "lucas", senha: "teste" },
+    { usuario: "carla", senha: "pass123" }
+  ];
+
+  // Função chamada ao tentar fazer login
+  function validarLogin() {
+    // Recupera o valor digitado no campo de usuário e remove espaços extras
+    const usuarioInput = document.getElementById('usuario').value.trim();
+
+    // Recupera o valor digitado no campo de senha e remove espaços extras
+    const senhaInput = document.getElementById('senha').value.trim();
+
+    // Seleciona a área onde será exibida a mensagem de sucesso ou erro
+    const mensagem = document.getElementById('mensagem');
+
+    // Procura no array se existe um usuário com nome e senha correspondentes
+    const encontrado = usuariosSalvos.find(
+      u => u.usuario === usuarioInput && u.senha === senhaInput
+    );
+
+    // Se encontrou o usuário com a senha correta
+    if (encontrado) {
+      // Exibe mensagem de sucesso
+      mensagem.textContent = "Usuario validado com sucesso, bem-vindo!";
+      // Define uma classe CSS para estilizar a mensagem (por exemplo, em verde)
+      mensagem.className = "success";
+    } else {
+      // Se não encontrou, exibe mensagem de erro
+      mensagem.textContent = "Falha na validação, usuário ou senha incorreto";
+      // Define uma classe CSS para estilizar a mensagem (por exemplo, em vermelho)
+      mensagem.className = "error";
+    }
+  }
+</script>
+
+</body>
+</html>

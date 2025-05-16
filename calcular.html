@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora Estatística</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+      background-color: #f2f2f2;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+
+    .resultados, .numeros {
+      background-color: white;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .resultados p, .numeros p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Calculadora Estatística</h1>
+
+<input type="number" id="numeroInput" placeholder="Digite um número e pressione Enter">
+<div class="resultados" id="resultado"></div>
+<button onclick="calcular()">Calcular</button>
+<div class="numeros" id="listaNumeros"><strong>Números inseridos:</strong></div>
+
+<script>
+  // Cria um array vazio para armazenar os números digitados
+  let numeros = [];
+
+  // Referência aos elementos do DOM
+  const input = document.getElementById("numeroInput");         // Campo de entrada do número
+  const listaNumeros = document.getElementById("listaNumeros"); // Div para mostrar os números inseridos
+  const resultado = document.getElementById("resultado");       // Div para exibir os resultados das análises
+
+  // Evento que ocorre quando a página é carregada
+  window.onload = function () {
+    // Tenta recuperar os números armazenados anteriormente no localStorage
+    const armazenado = localStorage.getItem("numeros");
+    
+    // Se existir algo armazenado, converte de string para array e atualiza a interface
+    if (armazenado) {
+      numeros = JSON.parse(armazenado);
+      atualizarLista();
+    }
+  };
+
+  // Evento acionado ao pressionar uma tecla no campo de input
+  input.addEventListener("keydown", function (e) {
+    // Verifica se a tecla pressionada foi Enter
+    if (e.key === "Enter") {
+      // Converte o valor do input para número decimal
+      const valor = parseFloat(input.value);
+      
+      // Verifica se o valor digitado é um número válido
+      if (!isNaN(valor)) {
+        numeros.push(valor);           // Adiciona o número ao array
+        salvarLocalStorage();          // Salva o array no localStorage
+        atualizarLista();              // Atualiza a lista exibida
+        input.value = "";              // Limpa o campo de input
+      }
+    }
+  });
+
+  // Função para salvar os dados no localStorage
+  function salvarLocalStorage() {
+    localStorage.setItem("numeros", JSON.stringify(numeros));
+  }
+
+  // Atualiza a visualização da lista de números inseridos
+  function atualizarLista() {
+    listaNumeros.innerHTML = "<strong>Números inseridos:</strong><br>" + numeros.join(", ");
+  }
+
+  // Função que realiza os cálculos estatísticos
+  function calcular() {
+    // Verifica se há números no array
+    if (numeros.length === 0) {
+      resultado.innerHTML = "<p>Nenhum número inserido.</p>";
+      return;
+    }
+
+    // Calcula a soma dos números
+    const soma = numeros.reduce((a, b) => a + b, 0);
+
+    // Calcula a média
+    const media = soma / numeros.length;
+
+    // Calcula a mediana (ordenando os números primeiro)
+    const sorted = [...numeros].sort((a, b) => a - b); // cópia do array ordenada
+    const meio = Math.floor(sorted.length / 2);
+    const mediana = sorted.length % 2 === 0
+      ? (sorted[meio - 1] + sorted[meio]) / 2
+      : sorted[meio];
+
+    // Calcula a moda (número mais frequente)
+    const frequencia = {};
+    numeros.forEach(num => frequencia[num] = (frequencia[num] || 0) + 1);
+    const maxFreq = Math.max(...Object.values(frequencia));
+    const moda = Object.keys(frequencia)
+      .filter(num => frequencia[num] === maxFreq)
+      .join(", ");
+
+    // Encontra o menor e o maior número
+    const menor = Math.min(...numeros);
+    const maior = Math.max(...numeros);
+
+    // Conta quantos números são positivos e quantos são negativos
+    const positivos = numeros.filter(n => n > 0).length;
+    const negativos = numeros.filter(n => n < 0).length;
+
+    // Exibe os resultados calculados na tela
+    resultado.innerHTML = `
+      <p><strong>Média:</strong> ${media.toFixed(2)}</p>
+      <p><strong>Mediana:</strong> ${mediana}</p>
+      <p><strong>Moda:</strong> ${moda}</p>
+      <p><strong>Maior:</strong> ${maior}</p>
+      <p><strong>Menor:</strong> ${menor}</p>
+      <p><strong>Positivos:</strong> ${positivos}</p>
+      <p><strong>Negativos:</strong> ${negativos}</p>
+      <p><strong>Total:</strong> ${numeros.length}</p>
+    `;
+  }
+
+</script>
+
+
+</body>
+</html>

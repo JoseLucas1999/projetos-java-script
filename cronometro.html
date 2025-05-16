@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Cronômetro</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      padding: 30px;
+    }
+
+    .cronometro {
+      background: #fff;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      display: inline-block;
+    }
+
+    #display {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .start { background-color: #28a745; color: white; }
+    .pause { background-color: #ffc107; color: white; }
+    .stop  { background-color: #dc3545; color: white; }
+    .save  { background-color: #007bff; color: white; }
+
+    .saved-times {
+      margin-top: 30px;
+      text-align: left;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .saved-item {
+      background: #e9ecef;
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .saved-item button {
+      background: #dc3545;
+      color: white;
+      font-size: 14px;
+      padding: 5px 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="cronometro">
+    <div id="display">00:00:00</div>
+    <button class="start" onclick="startTimer()">Start</button>
+    <button class="pause" onclick="pauseTimer()">Pause</button>
+    <button class="stop" onclick="stopTimer()">Stop</button>
+    <br><br>
+    <input type="text" id="nomeTempo" placeholder="Nome do tempo" />
+    <button class="save" onclick="saveTime()">Salvar</button>
+  </div>
+
+  <div class="saved-times" id="savedTimesList">
+    <!-- Tempos salvos aparecerão aqui -->
+  </div>
+
+  <script>
+    let segundos = 0;
+    let minutos = 0;
+    let horas = 0;
+    let intervalo;
+    let pausado = false;
+
+    function updateDisplay() {
+      const s = segundos.toString().padStart(2, '0');
+      const m = minutos.toString().padStart(2, '0');
+      const h = horas.toString().padStart(2, '0');
+      document.getElementById('display').textContent = `${h}:${m}:${s}`;
+    }
+
+    function startTimer() {
+      if (intervalo) return;
+      intervalo = setInterval(() => {
+        segundos++;
+        if (segundos === 60) {
+          segundos = 0;
+          minutos++;
+        }
+        if (minutos === 60) {
+          minutos = 0;
+          horas++;
+        }
+        updateDisplay();
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      clearInterval(intervalo);
+      intervalo = null;
+    }
+
+    function stopTimer() {
+      clearInterval(intervalo);
+      intervalo = null;
+      segundos = 0;
+      minutos = 0;
+      horas = 0;
+      updateDisplay();
+    }
+
+    function saveTime() {
+      const nome = document.getElementById("nomeTempo").value.trim();
+      if (!nome) {
+        alert("Digite um nome para salvar o tempo.");
+        return;
+      }
+      const tempo = document.getElementById("display").textContent;
+      const savedTimes = JSON.parse(localStorage.getItem("temposSalvos")) || [];
+      savedTimes.push({ nome, tempo });
+      localStorage.setItem("temposSalvos", JSON.stringify(savedTimes));
+      document.getElementById("nomeTempo").value = "";
+      renderSavedTimes();
+    }
+
+    function deleteTime(index) {
+      const savedTimes = JSON.parse(localStorage.getItem("temposSalvos")) || [];
+      savedTimes.splice(index, 1);
+      localStorage.setItem("temposSalvos", JSON.stringify(savedTimes));
+      renderSavedTimes();
+    }
+
+    function renderSavedTimes() {
+      const list = document.getElementById("savedTimesList");
+      list.innerHTML = "";
+      const savedTimes = JSON.parse(localStorage.getItem("temposSalvos")) || [];
+      savedTimes.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = "saved-item";
+        div.innerHTML = `
+          <span><strong>${item.nome}:</strong> ${item.tempo}</span>
+          <button onclick="deleteTime(${index})">Excluir</button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    window.onload = renderSavedTimes;
+  </script>
+</body>
+</html>

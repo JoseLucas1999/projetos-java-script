@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Buscador de Pessoas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f0f0f5;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .suggestions {
+      margin-top: 5px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    .suggestions div {
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .suggestions div:hover {
+      background-color: #e0e0e0;
+    }
+
+    .person-info {
+      margin-top: 20px;
+      background-color: #eef;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Buscador de Pessoas</h1>
+    <input type="text" id="searchInput" placeholder="Digite o nome">
+    <div class="suggestions" id="suggestions"></div>
+    <button onclick="searchPerson()">Pesquisar</button>
+    <div class="person-info" id="result"></div>
+  </div>
+
+<script>
+
+  // Lista de objetos representando pessoas com nome, sobrenome, idade e sexo
+  const pessoas = [
+    { nome: "Ana", sobrenome: "Silva", idade: 25, sexo: "Feminino" },
+    { nome: "Bruno", sobrenome: "Souza", idade: 32, sexo: "Masculino" },
+    { nome: "Carlos", sobrenome: "Oliveira", idade: 28, sexo: "Masculino" },
+    { nome: "Daniela", sobrenome: "Santos", idade: 21, sexo: "Feminino" },
+    { nome: "Eduardo", sobrenome: "Pereira", idade: 40, sexo: "Masculino" },
+    { nome: "Fernanda", sobrenome: "Costa", idade: 27, sexo: "Feminino" },
+    { nome: "Gabriel", sobrenome: "Rodrigues", idade: 35, sexo: "Masculino" },
+    { nome: "Helena", sobrenome: "Almeida", idade: 29, sexo: "Feminino" },
+    { nome: "Igor", sobrenome: "Lima", idade: 31, sexo: "Masculino" },
+    { nome: "Juliana", sobrenome: "Teixeira", idade: 23, sexo: "Feminino" },
+    { nome: "Kaio", sobrenome: "Fernandes", idade: 26, sexo: "Masculino" },
+    { nome: "Larissa", sobrenome: "Moura", idade: 24, sexo: "Feminino" },
+    { nome: "Marcos", sobrenome: "Martins", idade: 33, sexo: "Masculino" },
+    { nome: "Natália", sobrenome: "Barbosa", idade: 30, sexo: "Feminino" },
+    { nome: "Otávio", sobrenome: "Ribeiro", idade: 38, sexo: "Masculino" },
+    { nome: "Patrícia", sobrenome: "Dias", idade: 22, sexo: "Feminino" },
+    { nome: "Rafael", sobrenome: "Carvalho", idade: 36, sexo: "Masculino" },
+    { nome: "Sabrina", sobrenome: "Freitas", idade: 20, sexo: "Feminino" },
+    { nome: "Thiago", sobrenome: "Gomes", idade: 34, sexo: "Masculino" },
+    { nome: "Viviane", sobrenome: "Araújo", idade: 28, sexo: "Feminino" }
+  ];
+
+  // Captura os elementos da interface HTML: campo de busca, área de sugestões e área de resultado
+  const input = document.getElementById("searchInput"); // input de pesquisa
+  const suggestions = document.getElementById("suggestions"); // div de sugestão
+  const result = document.getElementById("result"); //div exibe resultado
+
+  // Evento que é disparado toda vez que o usuário digita algo no campo de busca
+  input.addEventListener("input", () => {
+    // Converte o valor digitado para minúsculas para facilitar a comparação
+    const search = input.value.toLowerCase();
+
+    // Limpa as sugestões anteriores
+    suggestions.innerHTML = "";
+
+    // Verifica se há texto no input para começar a filtrar
+    if (search.length > 0) {
+      // Filtra a lista de pessoas cujo nome começa com o texto digitado
+      const filtrados = pessoas.filter(p => p.nome.toLowerCase().startsWith(search));
+
+      // Para cada pessoa filtrada, cria uma sugestão clicável
+      filtrados.forEach(p => {
+        const div = document.createElement("div"); // Cria um elemento <div> para exibir o nome
+        div.textContent = p.nome; // Define o nome da pessoa como texto do elemento
+
+        // Ao clicar na sugestão, preenche o input com o nome escolhido e limpa as sugestões
+        div.onclick = () => {
+          input.value = p.nome;
+          suggestions.innerHTML = "";
+        };
+
+        // Adiciona o elemento de sugestão à lista de sugestões
+        suggestions.appendChild(div);
+      });
+    }
+  });
+
+  // Função que realiza a busca completa ao clicar em um botão ou chamar manualmente
+  function searchPerson() {
+    // Pega o texto do input e normaliza para letras minúsculas
+    const search = input.value.toLowerCase();
+
+    // Procura a pessoa que tenha exatamente o mesmo nome digitado
+    const pessoa = pessoas.find(p => p.nome.toLowerCase() === search);
+
+    // Se a pessoa foi encontrada, exibe seus dados no elemento de resultado
+    if (pessoa) {
+      result.innerHTML = `
+        <strong>Nome:</strong> ${pessoa.nome} ${pessoa.sobrenome}<br>
+        <strong>Idade:</strong> ${pessoa.idade}<br>
+        <strong>Sexo:</strong> ${pessoa.sexo}
+      `;
+    } else {
+      // Caso contrário, exibe mensagem de não encontrado
+      result.innerHTML = "<em>Pessoa não encontrada.</em>";
+    }
+  }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Passador de Imagens</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    .container {
+      width: 400px;
+      text-align: center;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .image-box {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+
+    .buttons {
+      margin-top: 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: default;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: #0056b3;
+    }
+
+    #imageName {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img id="image" class="image-box" src="img/cat1.jpg" alt="Imagem atual">
+    <div id="imageName">cat1</div>
+    <div class="buttons">
+      <button id="prevBtn">Anterior</button>
+      <button id="nextBtn">Próximo</button>
+    </div>
+  </div>
+
+  <script>
+    const images = [
+      'cat1', 'cat2', 'cat3',
+      'dog1', 'dog2', 'dog3',
+      'bird1', 'bird2', 'bird3',
+      'fish1', 'fish2', 'fish3'
+    ];
+
+    let currentIndex = 0;
+
+    const image = document.getElementById('image');
+    const imageName = document.getElementById('imageName');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function updateImage() {
+      const currentImage = images[currentIndex];
+      image.src = `img/${currentImage}.jpg`;
+      imageName.textContent = currentImage;
+
+      prevBtn.disabled = currentIndex === 0;
+      nextBtn.disabled = currentIndex === images.length - 1;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateImage();
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentIndex < images.length - 1) {
+        currentIndex++;
+        updateImage();
+      }
+    });
+
+    updateImage();
+  </script>
+</body>
+</html>

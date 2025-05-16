@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login/Cadastro Toggle</title>
+  <style>
+    .container {
+      max-width: 400px;
+      margin: 50px auto;
+      font-family: Arial, sans-serif;
+    }
+
+    .box {
+      padding: 20px;
+      text-align: center;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .show {
+      display: block;
+    }
+
+    .login {
+      background-color: lightgreen;
+    }
+
+    .cadastro {
+      background-color: lightblue;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- box login -->
+    <div id="loginBox" class="box login show">
+      <h2>Login</h2>
+      <button onclick="toggleForms()">Cadastrar</button>
+    </div>
+
+    <!-- box cadastro -->
+    <div id="cadastroBox" class="box cadastro">
+      <h2>Cadastro</h2>
+      <button onclick="toggleForms()">Logar</button>
+    </div>
+  </div>
+
+<script>
+  // Função que alterna a visibilidade dos formulários de login e cadastro
+  function toggleForms() {
+    // Obtém o elemento HTML com o ID 'loginBox' (formulário de login)
+    const loginBox = document.getElementById('loginBox');
+
+    // Obtém o elemento HTML com o ID 'cadastroBox' (formulário de cadastro)
+    const cadastroBox = document.getElementById('cadastroBox');
+
+    // Alterna a classe 'show' no loginBox. 
+    // Se a classe já estiver presente, ela é removida; se não estiver, é adicionada.
+    loginBox.classList.toggle('show');
+
+    // Faz o mesmo para o cadastroBox, alternando sua visibilidade
+    cadastroBox.classList.toggle('show');
+  }
+</script>
+
+
+</body>
+</html>

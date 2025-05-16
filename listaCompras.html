@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lista de Compras</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f9fc;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.6rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.5rem;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    .ordenar-btn {
+      background-color: #007bff;
+      margin-top: 1rem;
+    }
+
+    .ordenar-btn:hover {
+      background-color: #0056b3;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+
+    li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .total {
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Lista de Compras</h1>
+    <input type="text" id="itemNome" placeholder="Nome do item" />
+    <input type="number" id="itemPreco" placeholder="Preço do item" min="0" step="0.01" />
+    <button onclick="adicionarItem()">Adicionar</button>
+    <button class="ordenar-btn" onclick="ordenarPorPreco()">Ordenar por Preço (Crescente)</button>
+
+    <ul id="listaCompras"></ul>
+    <div class="total" id="totalValor">Total: R$ 0,00</div>
+  </div>
+
+<script>
+  // Inicializa um array vazio que irá armazenar os itens da lista de compras
+  let lista = [];
+
+  // Seleciona o elemento HTML onde os itens da lista serão exibidos
+  const listaCompras = document.getElementById('listaCompras');
+
+  // Seleciona o elemento onde será exibido o valor total da lista
+  const totalValor = document.getElementById('totalValor');
+
+  // Quando a página é carregada (window.onload)
+  window.onload = () => {
+    // Recupera os dados salvos anteriormente no localStorage (se existirem)
+    const dadosSalvos = localStorage.getItem('listaCompras');
+
+    // Se houver dados salvos, converte o JSON em array novamente e atualiza a lista
+    if (dadosSalvos) {
+      lista = JSON.parse(dadosSalvos);
+      atualizarLista();
+    }
+  };
+
+  // Salva o array 'lista' como JSON no localStorage
+  function salvarNoLocalStorage() {
+    localStorage.setItem('listaCompras', JSON.stringify(lista));
+  }
+
+  // Adiciona um novo item à lista de compras
+  function adicionarItem() {
+    // Obtém o nome do item do input e remove espaços
+    const nome = document.getElementById('itemNome').value.trim();
+
+    // Converte o preço informado em número decimal
+    const preco = parseFloat(document.getElementById('itemPreco').value);
+
+    // Valida se nome está vazio ou preço é inválido
+    if (nome === '' || isNaN(preco) || preco < 0) {
+      alert('Preencha um nome e um preço válido.');
+      return;
+    }
+
+    // Adiciona o novo item à lista como objeto com nome e preço
+    lista.push({ nome, preco });
+
+    // Limpa os inputs após adicionar
+    document.getElementById('itemNome').value = '';
+    document.getElementById('itemPreco').value = '';
+
+    // Salva no localStorage e atualiza a lista visível
+    salvarNoLocalStorage();
+    atualizarLista();
+  }
+
+  // Atualiza visualmente a lista de compras e o total de valores
+  function atualizarLista(itens = lista) {
+    // Limpa a lista atual exibida na tela
+    listaCompras.innerHTML = '';
+
+    // Para cada item, cria um <li> com o nome e valor formatado
+    itens.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = `${item.nome}`;
+      
+      const span = document.createElement('span');
+      span.textContent = `R$ ${item.preco.toFixed(2)}`;
+      
+      // Adiciona o valor ao lado do nome
+      li.appendChild(span);
+      
+      // Adiciona o item à lista HTML
+      listaCompras.appendChild(li);
+    });
+
+    // Calcula o total dos preços de todos os itens
+    const total = lista.reduce((acc, item) => acc + item.preco, 0);
+    
+    // Exibe o valor total formatado
+    totalValor.textContent = `Total: R$ ${total.toFixed(2)}`;
+  }
+
+  // Ordena os itens por preço crescente e atualiza a exibição
+  function ordenarPorPreco() {
+    // Cria uma cópia ordenada da lista original
+    const ordenado = [...lista].sort((a, b) => a.preco - b.preco);
+
+    // Atualiza a lista visível com os itens ordenados
+    atualizarLista(ordenado);
+  }
+</script>
+
+</body>
+</html>

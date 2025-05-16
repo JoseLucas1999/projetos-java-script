@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Buscador de Imagens</title>
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  background: #f0f0f5;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+
+input {
+  padding: 10px;
+  width: 60%;
+  font-size: 16px;
+}
+
+#suggestions {
+  list-style: none;
+  padding: 0;
+  margin: 5px auto;
+  width: 60%;
+  text-align: left;
+}
+
+#suggestions li {
+  background-color: #fff;
+  padding: 8px;
+  cursor: pointer;
+  border-bottom: 1px solid #ccc;
+}
+
+button {
+  padding: 10px 20px;
+  margin-top: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.gallery img {
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
+  margin: 10px;
+  border-radius: 10px;
+}
+    
+  </style>
+  
+</head>
+<body>
+  <div class="container">
+    <h1>Buscador de Imagens</h1>
+    <input type="text" id="searchInput" placeholder="Digite: gatos, cachorros, pássaros, peixes" autocomplete="off" />
+    <ul id="suggestions"></ul>
+    <button id="searchBtn">Pesquisar</button>
+    <div id="gallery" class="gallery"></div>
+  </div>
+
+  <script>
+// Lista de animais com seus respectivos nomes e imagens associadas    
+   const animals = [
+  { name: "gatos", images: ["cat1.jpg", "cat2.jpg", "cat3.jpg"] }, //galeria de gatos
+  { name: "cachorros", images: ["dog1.jpg", "dog2.jpg", "dog3.jpg"] }, //galeria de cachorros
+  { name: "pássaros", images: ["bird1.jpg", "bird2.jpg", "bird3.jpg"] }, //galeria de passaros
+  { name: "peixes", images: ["fish1.jpg", "fish2.jpg", "fish3.jpg"] } //galeria de peixes
+];
+
+// Referência aos elementos do DOM: input de busca, lista de sugestões, 
+//botão de busca e galeria de imagens
+const input = document.getElementById("searchInput"); //input busca os nomes
+const suggestions = document.getElementById("suggestions"); //sugere os nomes
+const searchBtn = document.getElementById("searchBtn"); // botão de pesquisa
+const gallery = document.getElementById("gallery"); // box de exibição da galaria
+
+// Adiciona um listener que será executado sempre que o conteúdo do input mudar
+input.addEventListener("input", () => {
+// Converte o texto digitado para minúsculas
+  const query = input.value.toLowerCase();
+// Limpa a lista de sugestões a cada nova digitação  
+  suggestions.innerHTML = "";
+
+// Se houver texto no input, filtra a lista de animais pelos que começam com o texto digitado
+  if (query.length > 0) {
+    const filtered = animals.filter(animal =>
+      animal.name.startsWith(query)
+    );
+// Para cada animal filtrado, cria um item de sugestão na lista    
+      filtered.forEach(animal => {
+        const li = document.createElement("li"); // Cria um novo item de lista
+        li.textContent = animal.name; // Define o nome do animal como texto do item
+        li.dataset.name = animal.name; // Armazena o nome no atributo "data-name"
+        li.classList.add("suggestion-item"); // Adiciona uma classe para facilitar a estilização/identificação
+        suggestions.appendChild(li); // Adiciona o item à lista de sugestões
+      });
+  }
+});
+
+// Quando o usuário clica em uma sugestão da lista
+suggestions.addEventListener("click", (e) => {
+// Verifica se o elemento clicado tem a classe de sugestão  
+  if (e.target.classList.contains("suggestion-item")) {
+      input.value = e.target.dataset.name; // Preenche o input com o nome do animal clicado
+      suggestions.innerHTML = ""; // Limpa as sugestões após o clique
+  }
+});
+
+// Quando o botão de busca é clicado
+searchBtn.addEventListener("click", () => {
+// Captura e normaliza o texto digitado  
+  const term = input.value.toLowerCase();
+// Busca o animal que tenha exatamente o nome digitado  
+  const animal = animals.find(a => a.name === term);
+// Limpa a galeria de imagens antes de exibir as novas  
+  gallery.innerHTML = "";
+
+  if (animal) {
+// Se encontrou o animal, exibe suas imagens na galeria    
+      animal.images.forEach(image => {
+        const img = document.createElement("img"); // Cria um elemento de imagem
+        img.src = `img/${image}`; // Define a origem da imagem
+        img.alt = term; // Define o texto alternativo
+        gallery.appendChild(img); // Adiciona a imagem à galeria
+      });
+    } else {
+      // Caso não encontre o animal, mostra uma mensagem de erro
+      gallery.innerHTML = "<p>Nenhuma imagem encontrada.</p>";
+    }
+  }); 
+    
+  </script>
+</body>
+</html>
